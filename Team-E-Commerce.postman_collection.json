@@ -1,0 +1,839 @@
+{
+	"info": {
+		"_postman_id": "35f5ed9a-f650-4e8a-9f3d-49b7f23595b1",
+		"name": "Team-E-Commerce",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27405435",
+		"_collection_link": "https://galactic-spaceship-69030.postman.co/workspace/Online-Course~67091279-f2e9-48d0-8b93-6338d9e7eee0/collection/27405435-35f5ed9a-f650-4e8a-9f3d-49b7f23595b1?action=share&source=collection_link&creator=27405435"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Create-Admin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\": \"123456\",\r\n    \"admin\": {\r\n        \"email\": \"halim@gmail.com\",\r\n        \"name\": \"Halim\",\r\n        \"contactNumber\": \"+880123456789\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/user/create-admin",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"user",
+								"create-admin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create-Customer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\": \"123456\",\r\n    \"customer\": {\r\n        \"email\": \"customer@gmail.com\",\r\n        \"name\": \"Customer\",\r\n        \"contactNumber\": \"+880123456789\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/user/create-customer",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"user",
+								"create-customer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create-Seller",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\": \"123456\",\r\n    \"seller\": {\r\n        \"email\": \"seller@example.com\",\r\n        \"name\": \"Seller Name\",\r\n        \"contactNumber\": \"123-456-7890\",\r\n        \"storeName\": \"Seller Store\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/user/create-seller",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"user",
+								"create-seller"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All-Users",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/user",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"user"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "halim@gmail.com",
+									"disabled": true
+								},
+								{
+									"key": "status",
+									"value": "BLOCKED",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show My Profile",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhhbGltQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTczNDc5NzI2NiwiZXhwIjoxNzM3Mzg5MjY2fQ.sf6CSsTJ1hsvkYR6fezl-WVsQHshCL-yM1BZPV9NV1g",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/user/me",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"user",
+								"me"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "halim@gmail.com",
+									"disabled": true
+								},
+								{
+									"key": "status",
+									"value": "BLOCKED",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change Profile Status",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"status\": \" BLOCKED\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/user/2f8631fb-7312-46e4-acf9-72cc77e4f2af",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"user",
+								"2f8631fb-7312-46e4-acf9-72cc77e4f2af"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "halim@gmail.com",
+									"disabled": true
+								},
+								{
+									"key": "status",
+									"value": "BLOCKED",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login Admin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"halim@gmail.com\",\r\n    \"password\": \"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/auth/login",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"halim@gmail.com\",\r\n    \"password\": \"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/auth/refresh-token",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth",
+								"refresh-token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change Password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"oldPassword\": \"123456\",\r\n    \"newPassword\": \"111222\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/auth/change-password",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth",
+								"change-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reset Password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"halim@gmail.com\",\r\n    \"password\": \"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/auth/reset-password",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth",
+								"reset-password"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Get  Data By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/admin/3c7c0574-7537-4862-9afd-c1eab8161c47",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"admin",
+								"3c7c0574-7537-4862-9afd-c1eab8161c47"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Admin Data",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Admin Name\",\r\n    \"contactNumber\": \"01711121212\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/admin/3c7c0574-7537-4862-9afd-c1eab8161c47",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"admin",
+								"3c7c0574-7537-4862-9afd-c1eab8161c47"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Admin Data",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/admin",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"admin"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User Address",
+			"item": [
+				{
+					"name": "Create User Address",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\": \"0ffbebb1-4904-4381-944f-a77c7a96f4c6\",\r\n    \"type\": \"SHIPPING\",\r\n    \"address\": \"123 Main Street\",\r\n    \"city\": \"New York\",\r\n    \"state\": \"NY\",\r\n    \"country\": \"USA\",\r\n    \"zipCode\": \"10001\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/address",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"address"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User Address",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"city\": \"New York\",\r\n    \"state\": \"NY\",\r\n    \"country\": \"USA\",\r\n    \"zipCode\": \"10002\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/address/6e6adf0d-eb0c-48a5-8468-103cea931f12",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"address",
+								"6e6adf0d-eb0c-48a5-8468-103cea931f12"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Address Id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\": \"0ffbebb1-4904-4381-944f-a77c7a96f4c6\",\r\n    \"type\": \"SHIPPING\",\r\n    \"address\": \"123 Main Street\",\r\n    \"city\": \"New York\",\r\n    \"state\": \"NY\",\r\n    \"country\": \"USA\",\r\n    \"zipCode\": \"10001\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/address/6e6adf0d-eb0c-48a5-8468-103cea931f12",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"address",
+								"6e6adf0d-eb0c-48a5-8468-103cea931f12"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All Address",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\": \"0ffbebb1-4904-4381-944f-a77c7a96f4c6\",\r\n    \"type\": \"SHIPPING\",\r\n    \"address\": \"123 Main Street\",\r\n    \"city\": \"New York\",\r\n    \"state\": \"NY\",\r\n    \"country\": \"USA\",\r\n    \"zipCode\": \"10001\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/address",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"address"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Category",
+			"item": [
+				{
+					"name": "Create Category",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Home Appliances\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/category",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"category"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All Category Data",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/category",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"category"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get Category By Id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/category/1d88d83a-6f6d-4394-8916-2b769e997d8f",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"category",
+								"1d88d83a-6f6d-4394-8916-2b769e997d8f"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Category",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Home Appliances\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/category/1d88d83a-6f6d-4394-8916-2b769e997d8f",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"category",
+								"1d88d83a-6f6d-4394-8916-2b769e997d8f"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deleted Category",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/category/1d88d83a-6f6d-4394-8916-2b769e997d8f",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"category",
+								"1d88d83a-6f6d-4394-8916-2b769e997d8f"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "Create Product",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Smartphone\",\r\n    \"description\": \"Latest generation smartphone with advanced camera features\",\r\n    \"price\": 799.99,\r\n    \"stock\": 30,\r\n    \"categoryId\": \"e13dc22a-75be-4627-938b-ec778fff25d3\",\r\n    \"images\": [\r\n        \"https://example.com/images/smartphone-front.jpg\",\r\n        \"https://example.com/images/smartphone-back.jpg\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/product",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"product"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All Product",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/product",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"product"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get by Id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/product/6b821733-8724-419e-a982-502a06b3d1e0",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"product",
+								"6b821733-8724-419e-a982-502a06b3d1e0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product Data",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"price\": 900,\r\n    \"stock\": 35\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/product/6b821733-8724-419e-a982-502a06b3d1e0",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"product",
+								"6b821733-8724-419e-a982-502a06b3d1e0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deleted Product",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/product/6a6652e6-5b0f-46fd-a552-088f95caeb02",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"product",
+								"6a6652e6-5b0f-46fd-a552-088f95caeb02"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "URL",
+			"value": "http://localhost:5000/api/v1",
+			"type": "string"
+		}
+	]
+}

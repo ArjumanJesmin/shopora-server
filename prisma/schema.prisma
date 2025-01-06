@@ -1,0 +1,263 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 String     @id @unique @default(uuid())
+  email              String     @unique
+  password           String
+  role               Role
+  needPasswordChange Boolean    @default(true)
+  status             UserStatus @default(ACTIVE)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  addresses       Address?
+  sellerProfile   Seller?
+  adminProfile    Admin?
+  customerProfile Customer?
+  Order           Order?
+
+  @@map("users")
+}
+
+enum UserStatus {
+  ACTIVE
+  BLOCKED
+  DELETED
+}
+
+model Seller {
+  id            String    @id @unique @default(uuid())
+  name          String
+  email         String    @unique
+  profilePhoto  String?
+  contactNumber String?
+  user          User      @relation(fields: [email], references: [email])
+  storeName     String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  wishlistId    String?
+  wishlist      Wishlist? @relation(fields: [wishlistId], references: [id])
+  reviews       Review[]
+  blogs         Blog[]
+
+  @@map("sellers")
+}
+
+model Admin {
+  id            String   @id @default(uuid())
+  name          String
+  email         String   @unique
+  profilePhoto  String?
+  contactNumber String
+  isDeleted     Boolean  @default(false)
+  user          User     @relation(fields: [email], references: [email])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("admins")
+}
+
+model Customer {
+  id            String   @id @default(uuid())
+  name          String
+  email         String   @unique
+  profilePhoto  String?
+  contactNumber String
+  user          User     @relation(fields: [email], references: [email])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  wishlistId String?
+  wishlist   Wishlist? @relation(fields: [wishlistId], references: [id])
+  blogs      Blog[]
+
+  @@map("customers")
+}
+
+enum Role {
+  SUPER_ADMIN
+  SELLER
+  ADMIN
+  CUSTOMER
+}
+
+model Address {
+  id        String      @id @default(uuid())
+  userId    String      @unique
+  user      User        @relation(fields: [userId], references: [id])
+  type      AddressType @default(SHIPPING)
+  address   String
+  city      String
+  state     String
+  country   String
+  zipCode   String
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@map("addresses")
+}
+
+enum AddressType {
+  SHIPPING
+  BILLING
+}
+
+model Product {
+  id          String     @id @unique @default(uuid())
+  name        String
+  description String
+  price       Float
+  stock       Int
+  categoryId  String
+  category    Category   @relation(fields: [categoryId], references: [id])
+  images      String[]
+  flashSale   FlashSale?
+  offer       Offer?
+  reviews     Review[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model Category {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  products  Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("categories")
+}
+
+model Order {
+  id            String        @id @unique @default(uuid())
+  productIds    String[]
+  totalAmount   Float
+  userId        String        @unique
+  user          User          @relation(fields: [userId], references: [id])
+  status        OrderStatus   @default(PENDING)
+  paymentStatus PaymentStatus @default(PENDING)
+  payment       Payment?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@map("orders")
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  CANCELLED
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  productId String   @unique
+  product   Product  @relation(fields: [productId], references: [id])
+  sellerId  String   @unique
+  seller    Seller?  @relation(fields: [sellerId], references: [id])
+  rating    Float
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("reviews")
+}
+
+model FlashSale {
+  id        String   @id @unique @default(uuid())
+  productId String   @unique
+  product   Product  @relation(fields: [productId], references: [id])
+  discount  Float
+  startAt   DateTime
+  endAt     DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("flashSales")
+}
+
+model Offer {
+  id        String   @id @unique @default(uuid())
+  productId String   @unique
+  product   Product  @relation(fields: [productId], references: [id])
+  discount  Float
+  startAt   DateTime
+  endAt     DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("offers")
+}
+
+model Wishlist {
+  id String @id @default(uuid())
+
+  productIds Int[]
+  Seller     Seller[]
+  Customer   Customer[]
+  updatedAt  DateTime   @updatedAt
+
+  @@map("wishlists")
+}
+
+model Payment {
+  id        String        @id @unique @default(uuid())
+  orderId   String        @unique
+  order     Order         @relation(fields: [orderId], references: [id])
+  amount    Float
+  status    PaymentStatus @default(PENDING)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@map("payments")
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  REFUNDED
+}
+
+model Blog {
+  id         String    @id @default(uuid())
+  title      String
+  content    String
+  updatedAt  DateTime  @updatedAt
+  sellerId   String    @unique
+  Seller     Seller?   @relation(fields: [sellerId], references: [id])
+  customerId String    @unique
+  Customer   Customer? @relation(fields: [customerId], references: [id])
+
+  @@map("blogs")
+}
+
+model Report {
+  id        String     @id @default(uuid())
+  type      ReportType @default(SALES)
+  content   String
+  createdAt DateTime   @default(now())
+
+  @@map("reports")
+}
+
+enum ReportType {
+  SALES
+  USERS
+  PERFORMANCE
+}
