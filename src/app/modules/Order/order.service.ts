@@ -1,57 +1,93 @@
-import { Prisma } from "@prisma/client";
+import { Order, OrderStatus, PaymentStatus, Prisma } from "@prisma/client";
 import prisma from "../../../shared/prisma";
-import { adminSearchAbleFields } from "../Admin/admin.constant";
 
-import { TOrder, TOrderData } from "./order.interface";
 import { paginationHelper } from "../../../helpers/paginationHelper";
 import { IPaginationOptions } from "../../interfaces/pagination";
+import { SearchAbleFields } from "./order.constant";
 
-const createOrder = async (payload: TOrder) => {
+// Order Create Data
+const createOrder = async (payload: Order) => {
   return await prisma.order.create({
     data: {
-      total: payload.total,
       userId: payload.userId,
-      orderItems: {
-        create: payload.orderItems.map((item) => ({
-          productId: item.productId,
-          quantity: item.quantity,
-        })),
-      },
+      totalAmount: payload.totalAmount,
+      productIds: payload.productIds,
+      status: payload.status || "PENDING",
+      paymentStatus: payload.paymentStatus || "PENDING",
     },
     include: {
       user: true,
-      orderItems: true,
       payment: true,
-      shipping: true,
     },
   });
 };
 
+// Order Get By Id  Data
 const getOrderByID = async (id: string) => {
   return await prisma.order.findUnique({
     where: { id },
     include: {
       user: true,
-      orderItems: {
-        include: {
-          product: true,
-        },
-      },
       payment: true,
-      shipping: true,
     },
   });
 };
 
-export const getAllOrders = async (options: IPaginationOptions) => {
+// Order Get All Data
+const getAllOrders = async (
+  params: any,
+  options: IPaginationOptions & { searchTerm?: string; [key: string]: any }
+) => {
   const { page, limit, skip } = paginationHelper.calculatePagination(options);
+  const { searchTerm, ...filterData } = params;
 
-  // Set up empty conditions (add filters if needed)
   const andConditions: Prisma.OrderWhereInput[] = [];
 
-  const whereConditions: Prisma.OrderWhereInput = { AND: andConditions };
+  // Add search term conditions
+  if (searchTerm) {
+    andConditions.push({
+      OR: SearchAbleFields.map((field) => {
+        const [relation, fieldName] = field.includes(".")
+          ? field.split(".")
+          : [null, field];
+        return relation
+          ? {
+              [relation]: {
+                [fieldName]: {
+                  contains: searchTerm,
+                  mode: "insensitive",
+                },
+              },
+            }
+          : {
+              [fieldName]: {
+                contains: searchTerm,
+                mode: "insensitive",
+              },
+            };
+      }),
+    });
+  }
 
-  // Fetch paginated orders with sorting
+  // Add filter conditions
+  if (Object.keys(filterData).length > 0) {
+    andConditions.push({
+      AND: Object.keys(filterData).map((key) => {
+        // Trim and validate enum fields
+        const sanitizedValue = (filterData[key] || "").toString().trim();
+        return {
+          [key]: {
+            equals: sanitizedValue,
+          },
+        };
+      }),
+    });
+  }
+
+  const whereConditions: Prisma.OrderWhereInput =
+    andConditions.length > 0 ? { AND: andConditions } : {};
+
+  // Fetch paginated and filtered orders
   const result = await prisma.order.findMany({
     where: whereConditions,
     skip,
@@ -66,17 +102,11 @@ export const getAllOrders = async (options: IPaginationOptions) => {
           },
     include: {
       user: true,
-      orderItems: {
-        include: {
-          product: true,
-        },
-      },
       payment: true,
-      shipping: true,
     },
   });
 
-  // Get total order count for meta information
+  // Get total count of orders matching the conditions
   const total = await prisma.order.count({
     where: whereConditions,
   });
@@ -91,27 +121,42 @@ export const getAllOrders = async (options: IPaginationOptions) => {
   };
 };
 
-const updateOrder = async (id: string, data: TOrderData) => {
+// Order Update Data
+const updateOrder = async (id: string, data: Partial<Order>) => {
+  // Validate the input data
+  if (!id) {
+    throw new Error("Order ID is required");
+  }
+
+  // Validate the order status
+  if (data.status && !Object.values(OrderStatus).includes(data.status)) {
+    throw new Error(`Invalid order status: ${data.status}`);
+  }
+
+  // Validate the payment status
+  if (
+    data.paymentStatus &&
+    !Object.values(PaymentStatus).includes(data.paymentStatus)
+  ) {
+    throw new Error(`Invalid payment status: ${data.paymentStatus}`);
+  }
+
   return await prisma.order.update({
     where: { id },
     data: {
-      ...data,
-      orderItems: data.orderItems
-        ? {
-            deleteMany: {},
-            create: data.orderItems,
-          }
-        : undefined,
+      productIds: data.productIds || undefined,
+      totalAmount: data.totalAmount || undefined,
+      status: data.status || undefined,
+      paymentStatus: data.paymentStatus || undefined,
     },
     include: {
       user: true,
-      orderItems: true,
       payment: true,
-      shipping: true,
     },
   });
 };
 
+// Order Delete Data
 const deleteOrder = async (id: string) => {
   return await prisma.order.delete({
     where: { id },

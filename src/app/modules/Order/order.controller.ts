@@ -7,7 +7,9 @@ import catchAsync from "../../../shared/catchAsync";
 import pick from "../../../shared/pick";
 
 import { OrderService } from "./order.service";
+import { userFilterAbleFields } from "./order.constant";
 
+// Create Order
 const createOrder = catchAsync(async (req, res) => {
   const result = await OrderService.createOrder(req.body);
 
@@ -19,19 +21,29 @@ const createOrder = catchAsync(async (req, res) => {
   });
 });
 
+// Get All Order Data
 const getAllFromDB: RequestHandler = catchAsync(async (req, res) => {
-  const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
-  const result = await OrderService.getAllOrders(options);
+  const filters = pick(req.query, userFilterAbleFields);
+  const options = pick(req.query, [
+    "limit",
+    "page",
+    "sortBy",
+    "sortOrder",
+    "searchTerm",
+  ]);
+
+  const result = await OrderService.getAllOrders(filters, options);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Admin data fetched!",
+    message: "Order data fetched!",
     meta: result.meta,
     data: result.data,
   });
 });
 
+// Get Order By ID
 const getByIdFromDB: RequestHandler = catchAsync(async (req, res) => {
   const { id } = req.params;
 
@@ -45,6 +57,7 @@ const getByIdFromDB: RequestHandler = catchAsync(async (req, res) => {
   });
 });
 
+// Update Order Data
 const updateOrderData: RequestHandler = catchAsync(async (req, res) => {
   const { id } = req.params;
 
@@ -57,6 +70,8 @@ const updateOrderData: RequestHandler = catchAsync(async (req, res) => {
     data: result,
   });
 });
+
+// Delete Order Data
 const deleteOrderData: RequestHandler = catchAsync(async (req, res) => {
   const { id } = req.params;
 
