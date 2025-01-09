@@ -9,9 +9,9 @@ import { SearchAbleFields } from "./order.constant";
 const createOrder = async (payload: Order) => {
   return await prisma.order.create({
     data: {
-      userId: payload.userId,
-      totalAmount: payload.totalAmount,
       productIds: payload.productIds,
+      totalAmount: payload.totalAmount,
+      userId: payload.userId,
       status: payload.status || "PENDING",
       paymentStatus: payload.paymentStatus || "PENDING",
     },

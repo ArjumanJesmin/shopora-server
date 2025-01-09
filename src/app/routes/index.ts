@@ -7,7 +7,6 @@ import { CategoryRoute } from "../modules/Category/category.route";
 import { ProductRoute } from "../modules/Product/product.route";
 import { ShoppingRoute } from "../modules/Shipping/shipping.route";
 import { OrderRoutes } from "../modules/Order/order.route";
-import { OrderItemRoute } from "../modules/OrderItem/orderItem.route";
 import { PaymentRoute } from "../modules/Payment/payment.route";
 import { ProfileRoute } from "../modules/Profile/profile.route";
 import { UserAddressRoutes } from "../modules/Address/address.route";
@@ -50,10 +49,6 @@ const moduleRoutes = [
   {
     path: "/order",
     route: OrderRoutes,
-  },
-  {
-    path: "/orderItem",
-    route: OrderItemRoute,
   },
   {
     path: "/payment",

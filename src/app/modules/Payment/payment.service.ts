@@ -1,21 +1,23 @@
-import { Payment, PaymentStatus } from "@prisma/client";
+import { PaymentStatus } from "@prisma/client";
 import prisma from "../../../shared/prisma";
 import { initiatePayment } from "./payment.utils";
+import axios from "axios";
+import config from "../../../config";
+import qs from "qs";
 
 const createAmarPayPayment = async (orderId: string) => {
-  const order = await prisma.order.findUnique({
-    where: {
-      id: orderId,
-    },
+  if (!orderId) {
+    throw new Error("Order ID is required.");
+  }
+  const order = await prisma.order.findFirstOrThrow({
+    where: { id: orderId },
     include: {
       user: {
-        include: {
-          customer: true,
+        select: {
+          email: true,
         },
       },
-      orderItems: true,
       payment: true,
-      shipping: true,
     },
   });
 
@@ -23,14 +25,17 @@ const createAmarPayPayment = async (orderId: string) => {
     throw new Error("Order not found.");
   }
 
-  // Access amount and customer details via the correct relations
+  // Check if a payment already exists for the order
+  if (order.paymentStatus !== PaymentStatus.PENDING) {
+    throw new Error("Payment already exists for this order.");
+  }
+
+  // Extract amount and customer details
   const paymentResponse = await initiatePayment(
-    order.total.toString(),
+    order.totalAmount.toString(),
     orderId,
     {
-      name: order.user.customer?.name || "Unknown",
-      phone: order.user.customer?.contactNumber || "Unknown",
-      email: order.user.email,
+      email: order.user.email || "Unknown",
     }
   );
 
@@ -38,16 +43,54 @@ const createAmarPayPayment = async (orderId: string) => {
   const payment = await prisma.payment.create({
     data: {
       orderId,
-      amount: order.total,
-      transactionId: paymentResponse.tran_id,
-      paymentGatewayData: paymentResponse.data,
-      status: PaymentStatus.UNPAID,
+      amount: order.totalAmount,
+      status: PaymentStatus.COMPLETED,
     },
   });
+
+  console.log("Payment saved successfully:", payment);
 
   return payment;
 };
 
+const updatePaymentStatus = async (
+  transactionId: string,
+  status: PaymentStatus
+) => {
+  const payment = await prisma.payment.update({
+    where: { id: transactionId },
+    data: { status, updatedAt: new Date() },
+  });
+
+  console.log("Payment status updated:", payment);
+  return payment;
+};
+
+const verifyPayment = async (transactionId: string) => {
+  if (!config.signature_key) {
+    throw new Error("Missing configuration for payment verification.");
+  }
+
+  try {
+    const response = await axios.post(
+      config.signature_key,
+      qs.stringify({
+        tran_id: transactionId,
+        signature_key: config.signature_key,
+      }),
+      { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
+    );
+
+    console.log("Payment verification response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error verifying payment:", error);
+    throw error;
+  }
+};
+
 export const AmarPayService = {
   createAmarPayPayment,
+  updatePaymentStatus,
+  verifyPayment,
 };

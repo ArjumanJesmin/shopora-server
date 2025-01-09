@@ -1,11 +1,14 @@
 import axios from "axios";
-import config from "../../../config";
 import qs from "qs";
+import { PrismaClient } from "@prisma/client";
+import config from "../../../config";
+
+const prisma = new PrismaClient();
 
 export const initiatePayment = async (
   amount: string,
   tranId: string,
-  customerDetails: { name: string; phone: string; email: string }
+  customerDetails: { email: string }
 ) => {
   if (!config.store_id || !config.signature_key || !config.payment_url) {
     throw new Error("Missing configuration for payment processing.");
@@ -20,9 +23,16 @@ export const initiatePayment = async (
     tran_id: tranId,
     success_url: "http://www.merchantdomain.com/successpage.html",
     fail_url: "http://www.merchantdomain.com/failedpage.html",
-    customer_name: customerDetails.name,
-    customer_phone: customerDetails.phone,
+    cancel_url: "http://www.merchantdomain.com/cancelpage.html",
     customer_email: customerDetails.email,
+    desc: "Merchant Registration Payment",
+    cus_email: customerDetails.email,
+    cus_city: "Dhaka",
+    cus_state: "Dhaka",
+    cus_postcode: "1206",
+    cus_country: "Bangladesh",
+    cus_phone: "+8801704",
+    type: "json",
   };
 
   try {
