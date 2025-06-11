@@ -53,40 +53,47 @@ const createAmarPayPayment = async (orderId: string) => {
   return payment;
 };
 
-const updatePaymentStatus = async (
-  transactionId: string,
-  status: PaymentStatus
-) => {
+const updatePaymentStatus = async (orderId: string, status: PaymentStatus) => {
+  // Check if the payment record exists
+  const paymentExists = await prisma.payment.findUnique({
+    where: { id: orderId },
+  });
+
+  if (!paymentExists) {
+    throw new Error(`Payment record with ID ${orderId} not found.`);
+  }
+
+  // Update payment status in the database
   const payment = await prisma.payment.update({
-    where: { id: transactionId },
+    where: { id: orderId },
     data: { status, updatedAt: new Date() },
   });
 
-  console.log("Payment status updated:", payment);
   return payment;
 };
 
-const verifyPayment = async (transactionId: string) => {
-  if (!config.signature_key) {
-    throw new Error("Missing configuration for payment verification.");
+const verifyPayment = async (orderId: string) => {
+  if (!config.payment.verificationUrl || !config.payment.signatureKey) {
+    throw new Error("Missing payment gateway configuration.");
   }
 
-  try {
-    const response = await axios.post(
-      config.signature_key,
-      qs.stringify({
-        tran_id: transactionId,
-        signature_key: config.signature_key,
-      }),
-      { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
-    );
+  const response = await axios.post(
+    config.payment.verificationUrl,
+    qs.stringify({
+      tran_id: orderId,
+      signature_key: config.payment.signatureKey,
+    }),
+    { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
+  );
 
-    console.log("Payment verification response:", response.data);
-    return response.data;
-  } catch (error) {
-    console.error("Error verifying payment:", error);
-    throw error;
+  const verificationResult = response.data;
+
+  console.log("Payment verification result:", verificationResult);
+  if (verificationResult.status === "VERIFIED") {
+    await updatePaymentStatus(orderId, PaymentStatus.COMPLETED);
   }
+
+  return verificationResult;
 };
 
 export const AmarPayService = {

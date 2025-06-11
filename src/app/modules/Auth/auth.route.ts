@@ -5,7 +5,7 @@ import { Role } from "@prisma/client";
 const router = express.Router();
 router.post(
   "/login",
-  auth(Role.SUPER_ADMIN, Role.ADMIN, Role.CUSTOMER, Role.SELLER),
+  // auth(Role.SUPER_ADMIN, Role.ADMIN, Role.CUSTOMER, Role.SELLER),
   AuthController.loginUser
 );
 router.post(

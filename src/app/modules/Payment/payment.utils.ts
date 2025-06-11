@@ -3,27 +3,27 @@ import qs from "qs";
 import { PrismaClient } from "@prisma/client";
 import config from "../../../config";
 
-const prisma = new PrismaClient();
-
 export const initiatePayment = async (
   amount: string,
   tranId: string,
   customerDetails: { email: string }
 ) => {
-  if (!config.store_id || !config.signature_key || !config.payment_url) {
+  const { payment } = config;
+
+  if (!payment.storeId || !payment.signatureKey || !payment.paymentUrl) {
     throw new Error("Missing configuration for payment processing.");
   }
 
   const data = {
-    store_id: config.store_id,
-    signature_key: config.signature_key,
-    amount: amount,
+    store_id: payment.storeId,
+    signature_key: payment.signatureKey,
+    amount,
     payment_type: "AmarPay",
     currency: "BDT",
     tran_id: tranId,
-    success_url: "http://www.merchantdomain.com/successpage.html",
-    fail_url: "http://www.merchantdomain.com/failedpage.html",
-    cancel_url: "http://www.merchantdomain.com/cancelpage.html",
+    success_url: payment.successUrl,
+    fail_url: payment.failUrl,
+    cancel_url: payment.cancelUrl,
     customer_email: customerDetails.email,
     desc: "Merchant Registration Payment",
     cus_email: customerDetails.email,
@@ -36,7 +36,7 @@ export const initiatePayment = async (
   };
 
   try {
-    const response = await axios.post(config.payment_url, qs.stringify(data), {
+    const response = await axios.post(payment.paymentUrl, qs.stringify(data), {
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
     });
 

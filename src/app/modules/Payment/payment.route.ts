@@ -3,6 +3,13 @@ import { PaymentController } from "./payment.controller";
 
 const router = express.Router();
 
-router.post("/", PaymentController.createAmarPayPayment);
+// Create a new payment
+router.post("/create", PaymentController.createAmarPayPayment);
+
+// Update payment status
+router.patch("/update-status", PaymentController.updatePaymentStatus);
+
+// Verify a payment
+router.post("/verify", PaymentController.verifyPayment);
 
 export const PaymentRoute = router;

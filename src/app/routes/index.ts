@@ -8,8 +8,9 @@ import { ProductRoute } from "../modules/Product/product.route";
 import { ShoppingRoute } from "../modules/Shipping/shipping.route";
 import { OrderRoutes } from "../modules/Order/order.route";
 import { PaymentRoute } from "../modules/Payment/payment.route";
-import { ProfileRoute } from "../modules/Profile/profile.route";
+
 import { UserAddressRoutes } from "../modules/Address/address.route";
+import { ReportRoutes } from "../modules/Report/report.route";
 
 const router = express.Router();
 
@@ -55,8 +56,8 @@ const moduleRoutes = [
     route: PaymentRoute,
   },
   {
-    path: "/profile",
-    route: ProfileRoute,
+    path: "/report",
+    route: ReportRoutes,
   },
 ];
 

@@ -16,7 +16,6 @@ const getAllFromDB = async (
 
   const andConditions: Prisma.CustomerWhereInput[] = [];
 
-  //console.log(filterData);
   if (params.searchTerm) {
     andConditions.push({
       OR: adminSearchAbleFields.map((field) => ({
@@ -75,11 +74,9 @@ const getByIdFromDB = async (id: string): Promise<Customer | null> => {
     },
     include: {
       user: {
-        include: {
-          profile: true,
-          location: true,
-          orders: true,
-          reviews: true,
+        select: {
+          id: true,
+          email: true,
         },
       },
     },
