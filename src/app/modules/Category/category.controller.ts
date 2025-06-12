@@ -4,6 +4,8 @@ import sendResponse from "../../../shared/sendResponse";
 
 import { RequestHandler } from "express";
 import { CategoryService } from "./category.service";
+import pick from "../../../shared/pick";
+import { FilterAbleFields } from "./category.constants";
 
 const createCategoryFromDB = catchAsync(async (req, res) => {
   const result = await CategoryService.createCategoryFromDB(req.body);
@@ -17,15 +19,19 @@ const createCategoryFromDB = catchAsync(async (req, res) => {
 });
 
 const getAllFromDB: RequestHandler = catchAsync(async (req, res) => {
-  const result = await CategoryService.getAllFromDB();
+  const filters = pick(req.query, FilterAbleFields);
+  const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
+
+  const result = await CategoryService.getAllFromDB(filters, options);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Category data shown successfully by Id !",
+    message: "Category data retrieved successfully!",
     data: result,
   });
 });
+
 const getByIdFromDB: RequestHandler = catchAsync(async (req, res) => {
   const { id } = req.params;
 

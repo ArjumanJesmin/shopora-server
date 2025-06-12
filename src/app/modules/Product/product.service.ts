@@ -1,7 +1,8 @@
-import { Product } from "@prisma/client";
+import { Prisma, Product } from "@prisma/client";
 import prisma from "../../../shared/prisma";
 import { IPaginationOptions } from "../../interfaces/pagination";
 import { paginationHelper } from "../../../helpers/paginationHelper";
+import { IProductFilterRequest } from "./product.constant";
 
 // Create product in DB
 const createProductFromDB = async (payload: Product) => {
@@ -23,17 +24,107 @@ const createProductFromDB = async (payload: Product) => {
 };
 
 // Get all products from DB
-const getAllFromDB = async (params: any, options: IPaginationOptions) => {
+const getAllFromDB = async (
+  params: IProductFilterRequest,
+  options: IPaginationOptions
+) => {
   const { page, limit, skip } = paginationHelper.calculatePagination(options);
-  const { searchTerm, ...filterData } = params;
+  const {
+    searchTerm,
+    minPrice,
+    maxPrice,
+    hasOffer,
+    hasFlashSale,
+    ...filterData
+  } = params;
+
+  const andConditions: Prisma.ProductWhereInput[] = [];
+
+  // Search logic: name or description
+  if (searchTerm) {
+    andConditions.push({
+      OR: [
+        {
+          name: {
+            contains: searchTerm,
+            mode: "insensitive",
+          },
+        },
+        {
+          description: {
+            contains: searchTerm,
+            mode: "insensitive",
+          },
+        },
+      ],
+    });
+  }
+
+  // Price filter
+  if (minPrice !== undefined) {
+    andConditions.push({
+      price: {
+        gte: minPrice,
+      },
+    });
+  }
+
+  if (maxPrice !== undefined) {
+    andConditions.push({
+      price: {
+        lte: maxPrice,
+      },
+    });
+  }
+
+  // Offer filter
+  if (hasOffer) {
+    andConditions.push({
+      offer: {
+        isNot: null,
+      },
+    });
+  }
+
+  // Flash sale filter
+  if (hasFlashSale) {
+    andConditions.push({
+      flashSale: {
+        isNot: null,
+      },
+    });
+  }
+
+  // Other field filters like categoryId, stock
+  if (Object.keys(filterData).length > 0) {
+    andConditions.push({
+      AND: Object.keys(filterData).map((key) => ({
+        [key]: {
+          equals: (filterData as any)[key],
+        },
+      })),
+    });
+  }
+
+  const whereConditions: Prisma.ProductWhereInput =
+    andConditions.length > 0 ? { AND: andConditions } : {};
+
   const [data, total] = await prisma.$transaction([
     prisma.product.findMany({
-      where: params,
+      where: whereConditions,
       skip,
       take: limit,
+      orderBy:
+        options.sortBy && options.sortOrder
+          ? {
+              [options.sortBy]: options.sortOrder,
+            }
+          : {
+              createdAt: "desc",
+            },
     }),
     prisma.product.count({
-      where: params,
+      where: whereConditions,
     }),
   ]);
 

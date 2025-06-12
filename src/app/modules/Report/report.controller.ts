@@ -7,6 +7,20 @@ import pick from "../../../shared/pick";
 import { ReportService } from "./report.service";
 import { adminFilterAbleFields } from "../Admin/admin.constant";
 
+const updateReport: RequestHandler = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const updatedData = req.body;
+
+  const result = await ReportService.updateReport(id, updatedData);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Report updated successfully!",
+    data: result,
+  });
+});
+
 // This controller handles report-related requests
 const getAllFromDB: RequestHandler = catchAsync(async (req, res) => {
   const filters = pick(req.query, adminFilterAbleFields);
@@ -50,7 +64,8 @@ const createReport: RequestHandler = catchAsync(async (req, res) => {
 });
 
 export const ReportController = {
+  createReport,
+  updateReport,
   getAllFromDB,
   getByIdFromDB,
-  createReport,
 };

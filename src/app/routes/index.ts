@@ -5,12 +5,16 @@ import { CustomerRoutes } from "../modules/Customer/customer.route";
 import { AuthRoutes } from "../modules/Auth/auth.route";
 import { CategoryRoute } from "../modules/Category/category.route";
 import { ProductRoute } from "../modules/Product/product.route";
-import { ShoppingRoute } from "../modules/Shipping/shipping.route";
 import { OrderRoutes } from "../modules/Order/order.route";
 import { PaymentRoute } from "../modules/Payment/payment.route";
 
 import { UserAddressRoutes } from "../modules/Address/address.route";
 import { ReportRoutes } from "../modules/Report/report.route";
+import { ReviewRoutes } from "../modules/Review/review.route";
+import { FlashSaleRoutes } from "../modules/FlashSale/flashSale.route";
+import { OfferRoutes } from "../modules/Offer/offer.route";
+import { WishlistRoutes } from "../modules/Wishlist/wishlist.route";
+import { BlogRoutes } from "../modules/Blog/blog.route";
 
 const router = express.Router();
 
@@ -43,10 +47,7 @@ const moduleRoutes = [
     path: "/product",
     route: ProductRoute,
   },
-  {
-    path: "/shopping",
-    route: ShoppingRoute,
-  },
+
   {
     path: "/order",
     route: OrderRoutes,
@@ -58,6 +59,26 @@ const moduleRoutes = [
   {
     path: "/report",
     route: ReportRoutes,
+  },
+  {
+    path: "/review",
+    route: ReviewRoutes,
+  },
+  {
+    path: "/flash-sales",
+    route: FlashSaleRoutes,
+  },
+  {
+    path: "/offer",
+    route: OfferRoutes,
+  },
+  {
+    path: "/wishlist",
+    route: WishlistRoutes,
+  },
+  {
+    path: "/blog",
+    route: BlogRoutes,
   },
 ];
 

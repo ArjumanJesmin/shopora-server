@@ -3,8 +3,9 @@ import { ReportController } from "./report.controller";
 
 const router = express.Router();
 
+router.post("/", ReportController.createReport);
+router.patch("/:id", ReportController.updateReport);
 router.get("/", ReportController.getAllFromDB);
 router.get("/:id", ReportController.getByIdFromDB);
-router.post("/", ReportController.createReport);
 
 export const ReportRoutes = router;

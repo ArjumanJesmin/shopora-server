@@ -1,12 +1,40 @@
-import { Prisma, ReportType } from "@prisma/client";
-import { IPaginationOptions } from "../../interfaces/pagination";
+import { Prisma, Report, ReportType } from "@prisma/client";
 import prisma from "../../../shared/prisma";
-import { IAdminFilterRequest } from "../Admin/admin.interface";
+import { IPaginationOptions } from "../../interfaces/pagination";
 import { paginationHelper } from "../../../helpers/paginationHelper";
+import { IReportFilterRequest } from "./report.constant";
+
+// create a new report
+const createReport = async (payload: Report) => {
+  const result = await prisma.report.create({
+    data: {
+      type: payload.type ?? ReportType.SALES,
+      content: payload.content,
+    },
+  });
+  return result;
+};
+
+const updateReport = async (id: string, payload: Report) => {
+  const isExist = await prisma.report.findUnique({ where: { id } });
+
+  if (!isExist) {
+    throw new Error("Report not found!");
+  }
+
+  const updatedReport = await prisma.report.update({
+    where: { id },
+    data: {
+      ...payload,
+    },
+  });
+
+  return updatedReport;
+};
 
 // This service handles report-related database operations
 const getAllFromDB = async (
-  params: IAdminFilterRequest,
+  params: IReportFilterRequest,
   options: IPaginationOptions
 ) => {
   const { page, limit, skip } = paginationHelper.calculatePagination(options);
@@ -26,7 +54,7 @@ const getAllFromDB = async (
         },
         {
           type: {
-            equals: searchTerm.toUpperCase() as ReportType, // if you want to filter by enum type string
+            equals: searchTerm.toUpperCase() as ReportType,
           },
         },
       ],
@@ -83,21 +111,9 @@ const getByIdFromDB = async (id: string) => {
   return result;
 };
 
-// create a new report
-const createReport = async (payload: {
-  type?: ReportType; // optional, defaults to SALES
-  content: string;
-}) => {
-  const result = await prisma.report.create({
-    data: {
-      type: payload.type ?? ReportType.SALES,
-      content: payload.content,
-    },
-  });
-  return result;
-};
 export const ReportService = {
+  createReport,
   getAllFromDB,
   getByIdFromDB,
-  createReport,
+  updateReport,
 };

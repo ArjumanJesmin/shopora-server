@@ -1,59 +1,91 @@
-# Shopora Server
+# 🛍️ Shopora Server
 
-Shopora Server is the backend service for the Shopora E-commerce platform. This project is built with modern web technologies to manage products, sellers, categories, and more for a seamless shopping experience.
+**Shopora Server** is the backend service for the Shopora E-commerce platform. This project is built using modern web technologies to manage products, sellers, categories, and more, delivering a seamless shopping experience.
 
-## GitHub Repository
+## 🌐 GitHub Repository
 
-[Shopora Server](https://github.com/ArjumanJesmin/shopora-server)
-
----
-
-## Table of Contents
-
-- [Features](#features)
-- [Technologies Used](#technologies-used)
-- [Installation](#installation)
-- [Usage](#usage)
-- [API Endpoints](#api-endpoints)
-- [Prisma Schema](#prisma-schema)
-- [Contributing](#contributing)
-- [License](#license)
+👉 [Shopora Server GitHub](https://github.com/ArjumanJesmin/shopora-server)
 
 ---
 
-## Features
+## 🗺️ Schema Diagram
 
-- **Product Management**: Add, update, delete, and fetch product details.
-- **Category Management**: Organize products by categories.
-- **Seller Management**: Manage seller data.
-- **Authentication**: Secure endpoints using JWT authentication.
-- **Database Integration**: Prisma ORM with PostgreSQL.
+The visual representation of the database schema is available here:
+
+📄 **[View Schema Diagram (PDF)](https://drive.google.com/file/d/1mp_stZOq9kXhoI1cK1FmwDDBaV0Z-R9V/view?usp=sharing)**
+
+## 📚 Table of Contents
+
+- [🚀 Features](#-features)
+- [🛠️ Technologies Used](#-technologies-used)
+- [⚙️ Installation](#-installation)
+- [▶️ Usage](#️-usage)
+- [📌 Environment Variables](#-environment-variables)
+- [📡 API Endpoints](#-api-endpoints)
+- [🧩 Prisma Schema](#-prisma-schema)
+- [🗺️ Schema Diagram](#-schema-diagram)
+- [🤝 Contributing](#-contributing)
+- [📄 License](#-license)
 
 ---
 
-## Technologies Used
+## 🚀 Features
 
-- **Node.js**: JavaScript runtime for building scalable server applications.
-- **Express.js**: Web framework for building RESTful APIs.
-- **PostgreSQL**: Relational database for storing application data.
-- **Prisma**: ORM for seamless database operations.
-- **TypeScript**: Strongly-typed JavaScript for building robust applications.
-- **JWT**: Secure authentication and authorization.
+- ✅ **Product Management**: Add, update, delete, and fetch product data.
+- ✅ **Category Management**: Create and organize products under categories.
+- ✅ **Seller Management**: Register, manage, and retrieve seller information.
+- ✅ **Customer & Admin Profiles**: Manage user roles and associated data.
+- ✅ **Authentication & Authorization**: Secure endpoints using JWT.
+- ✅ **Role-Based Access Control (RBAC)**: Super Admin, Admin, Seller, Customer.
+- ✅ **Order & Payment Processing**: Track status and transactions.
+- ✅ **Wishlist & Reviews**: Track user favorites and feedback.
+- ✅ **Blog & Reporting System**: Seller/customer blogs, and generate reports.
+- ✅ **Prisma ORM with PostgreSQL**: Type-safe database interactions.
 
 ---
 
-## Installation
+## 🛠️ Technologies Used
 
-### Prerequisites
+| Technology | Description                    |
+| ---------- | ------------------------------ |
+| Node.js    | JavaScript runtime environment |
+| Express.js | Lightweight web framework      |
+| PostgreSQL | Relational database            |
+| Prisma ORM | Type-safe database access      |
+| TypeScript | Strongly-typed JavaScript      |
+| JWT        | Secure authentication          |
+| Zod        | Request body validation        |
+| Dotenv     | Environment configuration      |
 
-- Node.js (v18.18.0 or higher)
-- npm (v10.8.2 or higher)
-- PostgreSQL
+---
 
-### Steps
+## ⚙️ Installation
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/ArjumanJesmin/shopora-server.git
-   cd shopora-server
-   ```
+### ✅ Prerequisites
+
+- **Node.js** >= 18.18.0
+- **npm** >= 10.8.2
+- **PostgreSQL** (local or hosted, e.g., Supabase)
+
+### 🧪 Setup Steps
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/ArjumanJesmin/shopora-server.git
+cd shopora-server
+
+# 2. Install dependencies
+npm install
+
+# 3. Set up environment variables
+cp .env.example .env
+# Fill in your DATABASE_URL and JWT_SECRET
+
+# 4. Generate Prisma client and migrate DB
+npx prisma generate
+npx prisma migrate dev --name init
+
+# 5. Start the development server
+npm run dev
+
+```

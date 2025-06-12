@@ -1,5 +1,8 @@
 import { Category } from "@prisma/client";
 import prisma from "../../../shared/prisma";
+import { IPaginationOptions } from "../../interfaces/pagination";
+import { paginationHelper } from "../../../helpers/paginationHelper";
+import { ICategoryFilterRequest } from "./category.constants";
 
 // Create a new category
 const createCategoryFromDB = async (payload: Category) => {
@@ -19,8 +22,48 @@ const createCategoryFromDB = async (payload: Category) => {
   return result;
 };
 
-const getAllFromDB = async () => {
-  return await prisma.category.findMany();
+const getAllFromDB = async (
+  params: ICategoryFilterRequest,
+  options: IPaginationOptions
+) => {
+  const { page, limit, skip } = paginationHelper.calculatePagination(options);
+  const { searchTerm } = params;
+
+  const andConditions: any[] = [];
+
+  if (searchTerm) {
+    andConditions.push({
+      name: {
+        contains: searchTerm,
+        mode: "insensitive",
+      },
+    });
+  }
+
+  const whereConditions =
+    andConditions.length > 0 ? { AND: andConditions } : {};
+
+  const [data, total] = await prisma.$transaction([
+    prisma.category.findMany({
+      where: whereConditions,
+      skip,
+      take: limit,
+      orderBy:
+        options.sortBy && options.sortOrder
+          ? { [options.sortBy]: options.sortOrder }
+          : { createdAt: "desc" },
+    }),
+    prisma.category.count({ where: whereConditions }),
+  ]);
+
+  return {
+    meta: {
+      page,
+      limit,
+      total,
+    },
+    data,
+  };
 };
 
 const getCategoryById = async (id: string) => {
